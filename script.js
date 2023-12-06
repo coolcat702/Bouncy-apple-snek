@@ -148,27 +148,44 @@ function update() {
         food.x += food.dx;
         food.y += food.dy;
 
-        // Handle food collisions with wall
-        if (food.x < 0) {
-            food.dx = -food.dx;
-            food.x = 0;
-        }
-        if (food.x >= canvas.width) {
-            food.dx = -food.dx;
-            food.x = canvas.width - GRID_SIZE;
-        }
-        if (food.y < 0) {
-            food.dy = -food.dy;
-            food.y = 0;
-        }
-        if (food.y >= canvas.height) {
-            food.dy = -food.dy;
-            food.y = canvas.height - GRID_SIZE;
-        }
+        // Handle food collisions with walls and snake segments
+        handleFoodCollisions();
     }
 
     blinkCounter++;
     draw(); // Draw the game objects
+}
+
+// Handle collisions between food and walls or snake segments
+function handleFoodCollisions() {
+    // Handle food collisions with walls
+    if (food.x < 0) {
+        food.dx = -food.dx;
+        food.x = 0;
+    }
+    if (food.x >= canvas.width) {
+        food.dx = -food.dx;
+        food.x = canvas.width - GRID_SIZE;
+    }
+    if (food.y < 0) {
+        food.dy = -food.dy;
+        food.y = 0;
+    }
+    if (food.y >= canvas.height) {
+        food.dy = -food.dy;
+        food.y = canvas.height - GRID_SIZE;
+    }
+
+    // Handle food collisions with snake segments
+    for (let i = 1; i < snake.length; i++) {
+        if (food.x === snake[i].x && food.y === snake[i].y) {
+            // Reverse the food direction and move it away from the colliding segment
+            food.dx = -food.dx;
+            food.dy = -food.dy;
+            food.x += food.dx * 2;
+            food.y += food.dy * 2;
+        }
+    }
 }
 
 // Draw the background grid
